@@ -1,23 +1,13 @@
-> **NOTE:** This is a general template that you can use for a project README.md. Except for the mandatory sections, use only those sections that suit your use case but keep the proposed section order.
->
-> Mandatory sections: 
-> - `Overview`
-> - `Prerequisites`, if there are any requirements regarding hard- or software
-> - `Installation`
-> - `Contributing` - do not change this!
-> - `Code of Conduct` - do not change this!
-> - `Licensing` - do not change this!
+# Manager Toolkit
 
-# {Project Title}
-<!--- mandatory --->
-> Modify the title and insert the name of your project. Use Heading 1 (H1).
+## Status
+
+[![REUSE status](https://api.reuse.software/badge/github.com/kyma-project/manager-toolkit)](https://api.reuse.software/info/github.com/kyma-project/manager-toolkit)
+
 
 ## Overview
-<!--- mandatory section --->
 
-> Provide a description of the project's functionality.
->
-> If it is an example README.md, describe what the example illustrates.
+Manager toolkit collects common tools and utilities across Manager projects to streamline development and ensure consistency.
 
 ## Prerequisites
 
