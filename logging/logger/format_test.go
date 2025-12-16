@@ -17,15 +17,21 @@ func TestFormatMapping(t *testing.T) {
 		expectedErr bool
 	}{
 		{
-			name:        "text format",
+			name:        "text format maps to console",
 			input:       "text",
-			expected:    logger.TEXT,
+			expected:    logger.CONSOLE,
 			expectedErr: false,
 		},
 		{
 			name:        "json format",
 			input:       "json",
 			expected:    logger.JSON,
+			expectedErr: false,
+		},
+		{
+			name:        "console format",
+			input:       "console",
+			expected:    logger.CONSOLE,
 			expectedErr: false,
 		},
 		{

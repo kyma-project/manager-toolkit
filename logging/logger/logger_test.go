@@ -155,7 +155,7 @@ func TestLogger(t *testing.T) {
 
 	t.Run("with context should create new logger", func(t *testing.T) {
 		//GIVEN
-		log, err := logger.New(logger.TEXT, logger.INFO)
+		log, err := logger.New(logger.CONSOLE, logger.INFO)
 		require.NoError(t, err)
 		//WHEN
 		firstLogger := log.WithContext()

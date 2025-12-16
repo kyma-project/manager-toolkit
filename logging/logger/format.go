@@ -15,7 +15,7 @@ const (
 	CONSOLE Format = "console"
 )
 
-var allFormats = []Format{JSON, TEXT}
+var allFormats = []Format{JSON, CONSOLE}
 
 func MapFormat(input string) (Format, error) {
 	var format = Format(input)
