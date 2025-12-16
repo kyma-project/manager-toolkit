@@ -11,8 +11,8 @@ import (
 type Format string
 
 const (
-	JSON Format = "json"
-	TEXT Format = "text"
+	JSON    Format = "json"
+	CONSOLE Format = "console"
 )
 
 var allFormats = []Format{JSON, TEXT}
@@ -20,8 +20,10 @@ var allFormats = []Format{JSON, TEXT}
 func MapFormat(input string) (Format, error) {
 	var format = Format(input)
 	switch format {
-	case JSON, TEXT:
+	case JSON, CONSOLE:
 		return format, nil
+	case "text":
+		return CONSOLE, nil
 	default:
 		return format, fmt.Errorf("given log format: %s, doesn't match with any of %v", format, allFormats)
 	}
@@ -36,7 +38,7 @@ func (f Format) ToZapEncoder() (zapcore.Encoder, error) {
 	switch f {
 	case JSON:
 		return zapcore.NewJSONEncoder(encoderConfig), nil
-	case TEXT:
+	case CONSOLE:
 		return zapcore.NewConsoleEncoder(encoderConfig), nil
 	default:
 		return nil, errors.New("unknown encoder")
