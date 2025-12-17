@@ -27,8 +27,8 @@ func Test_flagsBuilder_Build(t *testing.T) {
 					"managedBy": "test-runner",
 				},
 				"images": map[string]interface{}{
-					"connection":     "conn-im",
-					"rp": "rp-im",
+					"connection": "conn-im",
+					"rp":         "rp-im",
 				},
 			},
 		}

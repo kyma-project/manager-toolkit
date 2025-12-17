@@ -69,7 +69,6 @@ func updateObjects(config *Config, objs []unstructured.Unstructured) error {
 
 		// TODO: what if Apply returns error in the middle of manifest?
 		// maybe we should in this case translate applied objs into manifest and set it into cache?
-		// config.Cluster.Client.Patch(config.Ctx, &u, client.Apply, &client.PatchOptions{
 		err := config.Cluster.Client.Apply(config.Ctx, client.ApplyConfigurationFromUnstructured(&u), &client.ApplyOptions{
 			Force:        ptr.To(true),
 			FieldManager: config.ManagerName,

@@ -19,7 +19,7 @@ const (
 
 type VerificationResult struct {
 	// Ready indicates whether the verification was successful
-	Ready  bool
+	Ready bool
 	// Reason provides additional information about the verification result
 	// It can be "OK" if the verification is complete, DeploymentProcessing if still in progress,
 	// or a specific reason for failure.
