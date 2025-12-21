@@ -17,6 +17,8 @@ const (
 
 var allFormats = []Format{JSON, CONSOLE}
 
+// MapFormat maps a string representation of the log format to the Format type.
+// It supports "json" and "console" formats. Additionally, it treats "text" as "console" for backward compatibility.
 func MapFormat(input string) (Format, error) {
 	var format = Format(input)
 	switch format {
@@ -29,6 +31,7 @@ func MapFormat(input string) (Format, error) {
 	}
 }
 
+// ToZapEncoder converts the Format to a zapcore.Encoder.
 func (f Format) ToZapEncoder() (zapcore.Encoder, error) {
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.EncodeTime = zapcore.RFC3339TimeEncoder
