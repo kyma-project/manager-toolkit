@@ -10,7 +10,8 @@ updates:
       prefix: "actions"
       include: "scope"
   - package-ecosystem: "gomod"
-    directory: "/"
+    directories:
+      - "**"
     schedule:
       interval: "weekly"
     commit-message:
