@@ -1,4 +1,4 @@
-module github.com/kyma-project/manager-toolkit/installation/chart
+module github.com/kyma-project/manager-toolkit/installation/base
 
 go 1.24.0
 
