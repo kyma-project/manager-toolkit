@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kyma-project/manager-toolkit/installation/chart/base/resource"
+	"github.com/kyma-project/manager-toolkit/installation/base/resource"
 
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"

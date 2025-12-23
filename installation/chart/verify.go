@@ -3,7 +3,7 @@ package chart
 import (
 	"fmt"
 
-	"github.com/kyma-project/manager-toolkit/installation/chart/base/resource"
+	"github.com/kyma-project/manager-toolkit/installation/base/resource"
 
 	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"

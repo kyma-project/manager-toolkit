@@ -1,7 +1,7 @@
 package action
 
 import (
-	"github.com/kyma-project/manager-toolkit/installation/chart/base/resource"
+	"github.com/kyma-project/manager-toolkit/installation/base/resource"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 

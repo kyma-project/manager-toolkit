@@ -3,8 +3,8 @@ package chart
 import (
 	"fmt"
 
+	"github.com/kyma-project/manager-toolkit/installation/base/annotation"
 	"github.com/kyma-project/manager-toolkit/installation/chart/action"
-	"github.com/kyma-project/manager-toolkit/installation/chart/base/annotation"
 
 	"helm.sh/helm/v3/pkg/release"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
