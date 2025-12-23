@@ -12,11 +12,15 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
       - uses: ./.github/actions/setup-go
+
       - name: logging unit tests
-        run: |
-          cd logging
-          go test -v ./...
+        working-directory: logging
+        run: go test -v ./...
+
+      - name: base unit tests
+        working-directory: installation/base
+        run: go test -v ./...
+
       - name: chart unit tests
-        run: |
-          cd installation/chart
-          go test -v ./...
+        working-directory: installation/chart
+        run: go test -v ./...
