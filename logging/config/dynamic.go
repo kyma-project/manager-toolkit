@@ -5,7 +5,6 @@ import (
 
 	"github.com/kyma-project/manager-toolkit/logging/logger"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 // ReconfigureOnConfigChange monitors config changes and updates log level and format dynamically.
@@ -14,12 +13,17 @@ import (
 func ReconfigureOnConfigChange(ctx context.Context, log *zap.SugaredLogger, atomicLevel zap.AtomicLevel, cfgPath string) {
 	RunOnConfigChange(ctx, log, cfgPath, func(cfg Config) {
 		// Update log level
-		level, err := zapcore.ParseLevel(cfg.LogLevel)
+		level, err := logger.MapLevel(cfg.LogLevel)
 		if err != nil {
 			log.Error(err)
 			return
 		}
-		atomicLevel.SetLevel(level)
+		zapLevel, err := level.ToZapLevel()
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		atomicLevel.SetLevel(zapLevel)
 
 		// Recreate logger with current format from config
 		format, err := logger.MapFormat(cfg.LogFormat)
