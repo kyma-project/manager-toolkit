@@ -3,7 +3,7 @@ module github.com/kyma-project/manager-toolkit/installation/chart
 go 1.25.0
 
 require (
-	github.com/kyma-project/manager-toolkit/installation/base v0.0.0-20251223101702-0ba88f82e1d0
+	github.com/kyma-project/manager-toolkit/installation/base v0.260112.171735-414ac39
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/zap v1.27.1
