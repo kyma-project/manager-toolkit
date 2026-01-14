@@ -20,6 +20,7 @@ const (
 
 var allLevels = []Level{DEBUG, INFO, WARN, ERROR, FATAL}
 
+// MapLevel maps a string representation of a log level to the Level type
 func MapLevel(level string) (Level, error) {
 	var lvl = Level(level)
 
@@ -31,6 +32,7 @@ func MapLevel(level string) (Level, error) {
 	}
 }
 
+// ToZapLevel converts the Level type to the corresponding zapcore.Level
 func (l Level) ToZapLevel() (zapcore.Level, error) {
 	switch l {
 	case DEBUG:
