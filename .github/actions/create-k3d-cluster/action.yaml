@@ -74,19 +74,19 @@ runs:
       run: |
         # Create a dedicated ServiceAccount for the pipeline
         kubectl create serviceaccount ci-runner -n kube-system --dry-run=client -o yaml | kubectl apply -f -
-        
+
         # Bind the requested ClusterRole to it
         kubectl create clusterrolebinding ci-runner-binding \
           --clusterrole="${{ inputs.clusterrole }}" \
           --serviceaccount="kube-system:ci-runner" \
           --dry-run=client -o yaml | kubectl apply -f -
-        
+
         # Generate a short-lived token and write a dedicated kubeconfig
         TOKEN=$(kubectl create token ci-runner -n kube-system --duration=2h)
         echo "::add-mask::$TOKEN"
         SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
         CA=$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
-        
+
         KUBECONFIG_PATH=$(mktemp)
         chmod 600 "${KUBECONFIG_PATH}"
         kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-cluster k3d \
@@ -97,6 +97,6 @@ runs:
         kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-context default \
           --cluster=k3d --user=ci-runner
         kubectl config --kubeconfig="${KUBECONFIG_PATH}" use-context default
-        
+
         echo "KUBECONFIG=${KUBECONFIG_PATH}" >> $GITHUB_ENV
       shell: bash
