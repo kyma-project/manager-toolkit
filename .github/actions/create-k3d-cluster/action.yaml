@@ -5,10 +5,6 @@ inputs:
   restricted-registry-sa:
     description: 'Service Account (base64) with permissions to pull images from the restricted registry'
     required: false
-  clusterrole:
-    description: 'ClusterRole to bind to the pipeline ServiceAccount (e.g. view, edit, cluster-admin). Leave empty to skip.'
-    required: false
-    default: 'cluster-admin'
 
 runs:
   using: 'composite'
@@ -67,36 +63,4 @@ runs:
         # Patch the CNI config to make sure it is set up same as with the default Flannel backend
         kubectl patch installation default \
           --type=merge -p '{"spec":{"cni":{"binDir":"/var/lib/rancher/k3s/data/cni", "confDir":"/var/lib/rancher/k3s/agent/etc/cni/net.d"}}}'
-      shell: bash
-
-    - name: Configure pipeline kubeconfig with ClusterRole
-      if: ${{ inputs.clusterrole != '' }}
-      run: |
-        # Create a dedicated ServiceAccount for the pipeline
-        kubectl create serviceaccount ci-runner -n kube-system --dry-run=client -o yaml | kubectl apply -f -
-
-        # Bind the requested ClusterRole to it
-        kubectl create clusterrolebinding ci-runner-binding \
-          --clusterrole="${{ inputs.clusterrole }}" \
-          --serviceaccount="kube-system:ci-runner" \
-          --dry-run=client -o yaml | kubectl apply -f -
-
-        # Generate a short-lived token and write a dedicated kubeconfig
-        TOKEN=$(kubectl create token ci-runner -n kube-system --duration=2h)
-        echo "::add-mask::$TOKEN"
-        SERVER=$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')
-        CA=$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
-
-        KUBECONFIG_PATH=$(mktemp)
-        chmod 600 "${KUBECONFIG_PATH}"
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-cluster k3d \
-          --server="${SERVER}" \
-          --certificate-authority=<(echo "${CA}" | base64 -d) \
-          --embed-certs=true
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-credentials ci-runner --token="${TOKEN}"
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-context default \
-          --cluster=k3d --user=ci-runner
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" use-context default
-
-        echo "KUBECONFIG=${KUBECONFIG_PATH}" >> $GITHUB_ENV
       shell: bash
