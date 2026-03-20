@@ -1,9 +1,9 @@
 name: 'Configure kubeconfig with ClusterRole'
-description: 'Creates a short-lived kubeconfig bound to a specified ClusterRole and switches the pipeline context to it. Always uses the original admin kubeconfig to apply RBAC, so it works regardless of how many times it is called.'
+description: 'Adds a named context for the specified ClusterRole to the pipeline kubeconfig and switches to it. Always uses the admin context to apply RBAC.'
 
 inputs:
   clusterrole:
-    description: 'ClusterRole to bind to the pipeline ServiceAccount (e.g. view, edit, cluster-admin).'
+    description: 'ClusterRole to bind to the pipeline ServiceAccount. The context will be named after this role (e.g. edit, view, cluster-admin).'
     required: true
 
 runs:
@@ -11,39 +11,23 @@ runs:
   steps:
     - name: Configure pipeline kubeconfig with ClusterRole
       run: |
-        # On first call, persist the admin kubeconfig path for all future calls in this workflow.
-        if [ -z "${CI_ADMIN_KUBECONFIG}" ]; then
-          echo "CI_ADMIN_KUBECONFIG=${KUBECONFIG:-$HOME/.kube/config}" >> $GITHUB_ENV
-          ADMIN_KUBECONFIG="${KUBECONFIG:-$HOME/.kube/config}"
-        else
-          ADMIN_KUBECONFIG="${CI_ADMIN_KUBECONFIG}"
-        fi
+        # Admin context is always k3d-kyma, set by the create-k3d-cluster action.
+        ADMIN_CONTEXT="k3d-kyma"
+        ROLE="${{ inputs.clusterrole }}"
 
-        # Always use the admin kubeconfig to apply RBAC
-        kubectl --kubeconfig="${ADMIN_KUBECONFIG}" create serviceaccount ci-runner -n kube-system --dry-run=client -o yaml \
-          | kubectl --kubeconfig="${ADMIN_KUBECONFIG}" apply -f -
+        # Use the admin context for all RBAC operations.
+        kubectl --context="${ADMIN_CONTEXT}" create serviceaccount "${ROLE}" -n kube-system --dry-run=client -o yaml \
+          | kubectl --context="${ADMIN_CONTEXT}" apply -f -
 
-        kubectl --kubeconfig="${ADMIN_KUBECONFIG}" create clusterrolebinding ci-runner-binding \
-          --clusterrole="${{ inputs.clusterrole }}" \
-          --serviceaccount="kube-system:ci-runner" \
+        kubectl --context="${ADMIN_CONTEXT}" create clusterrolebinding "${ROLE}" \
+          --clusterrole="${ROLE}" \
+          --serviceaccount="kube-system:${ROLE}" \
           --dry-run=client -o yaml \
-          | kubectl --kubeconfig="${ADMIN_KUBECONFIG}" apply -f -
+          | kubectl --context="${ADMIN_CONTEXT}" apply -f -
 
-        TOKEN=$(kubectl --kubeconfig="${ADMIN_KUBECONFIG}" create token ci-runner -n kube-system --duration=2h)
+        TOKEN=$(kubectl --context="${ADMIN_CONTEXT}" create token "${ROLE}" -n kube-system --duration=24h)
         echo "::add-mask::$TOKEN"
-        SERVER=$(kubectl --kubeconfig="${ADMIN_KUBECONFIG}" config view --minify -o jsonpath='{.clusters[0].cluster.server}')
-        CA=$(kubectl --kubeconfig="${ADMIN_KUBECONFIG}" config view --minify --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')
-
-        KUBECONFIG_PATH=$(mktemp)
-        chmod 600 "${KUBECONFIG_PATH}"
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-cluster k3d \
-          --server="${SERVER}" \
-          --certificate-authority=<(echo "${CA}" | base64 -d) \
-          --embed-certs=true
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-credentials ci-runner --token="${TOKEN}"
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" set-context default \
-          --cluster=k3d --user=ci-runner
-        kubectl config --kubeconfig="${KUBECONFIG_PATH}" use-context default
-
-        echo "KUBECONFIG=${KUBECONFIG_PATH}" >> $GITHUB_ENV
+        kubectl config set-credentials "${ROLE}" --token="${TOKEN}"
+        kubectl config set-context "${ROLE}" --cluster="k3d-kyma" --user="${ROLE}"
+        kubectl config use-context "${ROLE}"
       shell: bash
