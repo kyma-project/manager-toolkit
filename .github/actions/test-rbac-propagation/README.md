@@ -1,12 +1,12 @@
 # test-rbac-propagation
 
-A GitHub Action that verifies RBAC propagation for the aggregated `admin`, `edit`, and `view` ClusterRoles in a Kubernetes cluster.
+A GitHub action that verifies RBAC propagation for the aggregated `admin`, `edit`, and `view` ClusterRoles in a Kubernetes cluster.
 
-`admin`, `edit`, and `view` are standard Kubernetes ClusterRoles — they are always present in every cluster.
+`admin`, `edit`, and `view` are standard Kubernetes ClusterRoles, which are always present in every cluster.
 
 It reads a YAML config file that declares which rules each role **must** contain and which rules are **forbidden**, then cross-checks those expectations against the live ClusterRoles via the Kubernetes API.
 
-## How it works
+## How It Works
 
 Kubernetes aggregates RBAC rules upward through the hierarchy `view ⊂ edit ⊂ admin`.  
 The action models this automatically:
