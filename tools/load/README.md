@@ -2,6 +2,12 @@
 
 KWOK-based memory load test that deploys fake resources in increasing steps and measures peak memory usage of all pods in the cluster.
 
+## Purpose
+
+This test is designed to measure how namespace-scoped resources affect the memory usage of cluster pods. By creating resources in a dedicated namespace per step and observing peak memory across all cluster pods, it reveals which components react to namespace-scoped resource pressure and by how much.
+
+The test is cluster-agnostic and can be run against **any cluster type** — k3d, BTP, Gardener, or any other Kubernetes-compatible cluster — as long as `kubectl` is configured to point at it.
+
 ## How it works
 
 ```text
@@ -55,13 +61,13 @@ Runs the load test against an existing cluster.
 | Variable                 | Default                        | Description                                                       |
 | ------------------------ | ------------------------------ | ----------------------------------------------------------------- |
 | `RESOURCE_COUNTS`        | `500 1000 2000 3000 4000 5000` | Space-separated resource counts per step                          |
-| `RESOURCE_TEMPLATE_PATH` | `resources/pod-template.yaml`  | Path to a YAML template for one resource                          |
+| `RESOURCE_TEMPLATE_PATH` | `resources/pod-template.yaml`  | Path to a YAML template for one resource; ready-to-use templates are in the `resources/` directory |
 | `SAMPLE_DURATION`        | `60`                           | Seconds to sample memory after resources are created              |
 | `KWOK_VERSION`           | `v0.7.0`                       | KWOK release tag                                                  |
 | `SETUP_KWOK`             | `true`                         | Install KWOK controller and fake node                             |
 | `CLEANUP_KWOK`           | `true`                         | Delete KWOK namespace and fake node on exit                       |
 | `DELETE_TIMEOUT`         | `300`                          | Seconds to wait for step namespace full deletion before next step |
-| `REPORT_PATH`            | ``                             | Save report to this `.md` file path in addition to stdout         |
+| `REPORT_PATH`            | `load_result.md`               | Save report to this `.md` file path in addition to stdout         |
 | `TEST_NS_LABEL`          | ``                             | Extra label applied to the per-step test namespace                |
 
 ```bash

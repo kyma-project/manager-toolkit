@@ -17,7 +17,7 @@ set -euo pipefail
 #   SETUP_KWOK             Install KWOK controller and fake node (true/false) (default: true)
 #   CLEANUP_KWOK           Delete KWOK namespace on exit (true/false) (default: true)
 #   DELETE_TIMEOUT         Seconds to wait for step namespace deletion (default: 120)
-#   REPORT_PATH            Save report to this .md file path         (default: "")
+#   REPORT_PATH            Save report to this .md file path         (default: "load_result.md")
 #   TEST_NS_LABEL          Extra label applied to test ns            (default: "")
 #
 # Example:
@@ -28,14 +28,13 @@ set -euo pipefail
 log() { echo "[$(date +%T)] $*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
-POD_COUNTS="${POD_COUNTS:-}" # kept for backward compat — overrides RESOURCE_COUNTS
-RESOURCE_COUNTS="${POD_COUNTS:-${RESOURCE_COUNTS:-500 1000 2000 3000 4000 5000}}"
+RESOURCE_COUNTS="${RESOURCE_COUNTS:-500 1000 2000 3000 4000 5000}"
 SAMPLE_DURATION="${SAMPLE_DURATION:-60}"
 KWOK_VERSION="${KWOK_VERSION:-v0.7.0}"
 CLEANUP_KWOK="${CLEANUP_KWOK:-true}"
 SETUP_KWOK="${SETUP_KWOK:-true}"
 DELETE_TIMEOUT="${DELETE_TIMEOUT:-300}"
-REPORT_PATH="${REPORT_PATH:-}"
+REPORT_PATH="${REPORT_PATH:-load_result.md}"
 
 TEST_NS_LABEL="${TEST_NS_LABEL:-}"
 
