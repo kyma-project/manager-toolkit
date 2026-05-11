@@ -13,29 +13,26 @@ The test is cluster-agnostic and can be run against **any cluster type** — k3d
 ```text
 run-test.sh
 │
-├─ [SETUP_KWOK=true]
-│   ├── Deploy KWOK controller (kwok-system namespace)
-│   └── Create fake node (kwok-node-0)
+├─ Deploy KWOK controller and fake node
 │
 ├─ Start background memory sampler (kubectl top pod -A every 1s)
 │
-├─ Baseline: sample for SAMPLE_DURATION seconds (no resources)
+├─ Baseline: sample for configured duration (no resources)
 │   └── snapshot peak memory → "baseline" column
 │
-└─ For each count in RESOURCE_COUNTS:
+└─ For each resource count step:
     ├── Create namespace  load-test-<count>
-    │     └── [TEST_NS_LABEL] apply extra label
-    ├── Render N resources from RESOURCE_TEMPLATE_PATH (envsubst)
+    ├── Render N resources from template
     │     └── kubectl apply --server-side
-    ├── Sample memory for SAMPLE_DURATION seconds
+    ├── Sample memory for configured duration
     │     └── snapshot peak memory → "<count> res" column
     ├── Check for failing pods cluster-wide
-    └── Delete namespace load-test-<count> (wait up to DELETE_TIMEOUT)
+    └── Delete namespace load-test-<count> (wait up to timeout)
 
 [on exit]
 ├─ Stop sampler
-├─ [CLEANUP_KWOK=true] Delete fake node, delete kwok-system namespace
-└─ Print report (stdout + REPORT_PATH if set)
+├─ Delete fake node and KWOK namespace
+└─ Print report to stdout and file
 ```
 
 ## Prerequisites
@@ -79,9 +76,6 @@ RESOURCE_TEMPLATE_PATH=hack/load/resources/secret-template.yaml bash hack/load/r
 
 # Skip KWOK install (if already running) and keep it after the test
 SETUP_KWOK=false CLEANUP_KWOK=false bash hack/load/run-test.sh
-
-# Save report to a file
-REPORT_PATH=results.md bash hack/load/run-test.sh
 
 # Apply a namespace label (e.g. to enable Warden validation)
 TEST_NS_LABEL="namespaces.warden.kyma-project.io/validate=system" bash hack/load/run-test.sh
