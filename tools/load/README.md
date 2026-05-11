@@ -21,13 +21,12 @@ run-test.sh
 │   └── snapshot peak memory → "baseline" column
 │
 └─ For each resource count step:
-    ├── Create namespace load-test-<count>
+    ├── Start sampling pods' memory usage
+    ├── Create namespace
     ├── Render N resources from template
-    │     └── kubectl apply --server-side
-    ├── Sample memory for configured duration
-    │     └── snapshot peak memory → "<count> res" column
     ├── Check for failing pods cluster-wide
-    └── Delete namespace load-test-<count> (wait up to timeout)
+    ├── Collect data from the sampler
+    └── Delete namespace load-test
 
 [on exit]
 ├─ Stop sampler
