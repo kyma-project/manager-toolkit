@@ -21,7 +21,7 @@ run-test.sh
 │   └── snapshot peak memory → "baseline" column
 │
 └─ For each resource count step:
-    ├── Create namespace  load-test-<count>
+    ├── Create namespace load-test-<count>
     ├── Render N resources from template
     │     └── kubectl apply --server-side
     ├── Sample memory for configured duration
