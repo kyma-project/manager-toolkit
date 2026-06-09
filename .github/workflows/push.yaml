@@ -8,6 +8,7 @@ jobs:
   tag-commit:
     name: Create tag for commit
     runs-on: ubuntu-latest
+    environment: secrets
 
     steps: 
     - uses: actions/checkout@v6
