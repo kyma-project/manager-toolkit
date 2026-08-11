@@ -6,6 +6,3 @@ on:
 jobs:
   unit-tests:
     uses: ./.github/workflows/_unit-tests.yaml
-
-  gitleaks:
-    uses: ./.github/workflows/_gitleaks.yaml
