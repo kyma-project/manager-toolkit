@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/kyma-project/manager-toolkit/installation/base v0.260521.143230-2b28ea6
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	go.uber.org/zap v1.28.0
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.19.5
