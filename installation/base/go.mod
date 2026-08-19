@@ -3,7 +3,7 @@ module github.com/kyma-project/manager-toolkit/installation/base
 go 1.25.0
 
 require (
-	github.com/stretchr/testify v1.11.1
+	github.com/stretchr/testify v1.12.0
 	go.uber.org/zap v1.28.0
 	k8s.io/api v0.35.5
 	k8s.io/apimachinery v0.35.5
